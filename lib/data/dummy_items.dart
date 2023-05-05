@@ -1,14 +1,8 @@
-import 'package:shopping_meals/models/grocery_item.dart';
 import 'package:shopping_meals/data/categories.dart';
-
+import 'package:shopping_meals/models/grocery_item.dart';
 import '../models/category.dart';
 
- final groceryItems = [
-  GroceryItem(
-      id: 'a',
-      name: 'Milk',
-      quantity: 1,
-      category: categories[Categories.dairy]!),
+var groceryItems = [
   GroceryItem(
       id: 'b',
       name: 'Bananas',

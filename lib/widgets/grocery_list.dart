@@ -1,30 +1,60 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
-import 'package:shopping_meals/data/dummy_items.dart';
+import 'package:get/get.dart';
+import 'package:shopping_meals/controller/grocery_controller.dart';
+import 'package:shopping_meals/controller/new_item_controller.dart';
 
-class GroceryList extends GetView {
-  const GroceryList({super.key});
+import 'new_item.dart';
+
+class GroceryList extends GetView<GroceryController> {
+  const GroceryList({Key? key}) : super(key: key);
+
+  void _addItem() async {
+    Get.put(NewItemController());
+    await Get.to(() => NewItemScreen());
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Your Grocery'),
+        title: const Text('Your Grocery'),
+        actions: [
+          IconButton(
+            onPressed: _addItem,
+            icon: const Icon(Icons.add),
+          )
+        ],
       ),
-      body: ListView.builder(
-        itemCount: groceryItems.length,
-        itemBuilder: (ctx, index) => ListTile(
-          title: Text(groceryItems[index].name),
-          leading: Container(
-            width: 24,
-            height: 24,
-            color: groceryItems[index].category.color,
-          ),
-          trailing: Text(
-            groceryItems[index].quantity.toString(),
-          ),
-        ),
+      body: Obx(
+            () {
+          if (controller.groceryItemList.isEmpty) {
+            return const Center(
+              child: Text('No Items Added Yet'),
+            );
+          }
+          return ListView.builder(
+            itemCount: controller.groceryItemList.length,
+            itemBuilder: (ctx, index) => Dismissible(
+              onDismissed: (direction) {
+                controller.groceryItemList.removeAt(index);
+              },
+              key: ValueKey(controller.groceryItemList[index].id),
+              child: ListTile(
+                title: Text(controller.groceryItemList[index].name),
+                leading: Container(
+                  width: 24,
+                  height: 24,
+                  color: controller.groceryItemList[index].category.color,
+                ),
+                trailing: Text(
+                  controller.groceryItemList[index].quantity.toString(),
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
 }
+
